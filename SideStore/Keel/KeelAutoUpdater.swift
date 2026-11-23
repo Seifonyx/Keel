@@ -129,19 +129,7 @@ actor KeelAutoUpdater {
             let context = DatabaseManager.shared.persistentContainer.newBackgroundContext()
             let plan: [(candidate: KeelUpdateCandidate, app: InstalledApp)] = await context.perform {
                 InstalledApp.fetchActiveApps(in: context).compactMap { app -> (candidate: KeelUpdateCandidate, app: InstalledApp)? in
-                    guard let latest = app.storeApp?.latestSupportedVersion else { return nil }
-                    let candidate = KeelUpdateCandidate(
-                        bundleIdentifier: app.bundleIdentifier,
-                        name: app.name,
-                        installedVersion: app.version,
-                        installedStoreBuild: app.storeBuildVersion,
-                        installedBundleBuild: app.buildVersion,
-                        latestVersion: latest.version,
-                        latestBuild: latest.buildVersion,
-                        latestIsSupported: latest.isSupported,
-                        upstreamSaysUpdate: app.hasUpdate,
-                        isActive: app.isActive,
-                        isKeelItself: app.bundleIdentifier == StoreApp.altstoreAppID)
+                    guard let candidate = app.keelCandidate else { return nil }
                     return (candidate: candidate, app: app)
                 }
             }

@@ -47,6 +47,8 @@ final class TabBarController: UITabBarController
         
         let sourcesNavigationController = self.viewControllers![Tab.sources.rawValue] as! UINavigationController
         self.sourcesViewController = sourcesNavigationController.viewControllers.first as? SourcesViewController
+
+        KeelRoot.install(on: self) // KEEL: Keel's tabs (Apps, Sources, Activity, Settings)
     }
     
     override func viewDidAppear(_ animated: Bool)
@@ -92,7 +94,7 @@ extension TabBarController
             self.sourcesViewController?.deepLinkSourceURL = sourceURL
         }
         
-        self.selectedIndex = Tab.sources.rawValue
+        self.selectedIndex = KeelRoot.Tab.sources.rawValue // KEEL: Keel's tab order (upstream: Tab.sources)
     }
 }
 
@@ -100,11 +102,11 @@ private extension TabBarController
 {
     @objc func importApp(_ notification: Notification)
     {
-        self.selectedIndex = Tab.myApps.rawValue
+        KeelRoot.presentClassicMyApps() // KEEL: SideStore's My Apps shows the import (upstream: selectedIndex = Tab.myApps)
     }
 
     @objc func openErrorLog(_ notification: Notification)
     {
-        self.selectedIndex = Tab.settings.rawValue
+        KeelRoot.presentAdvancedSettings() // KEEL: SideStore's settings shows the error log (upstream: selectedIndex = Tab.settings)
     }
 }

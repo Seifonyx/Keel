@@ -172,28 +172,38 @@ private struct KeelLogRow: View {
 
 // MARK: - About
 
+/// About Keel. The legal notice is what the AGPL asks a modified version's interface to show:
+/// the licence, no warranty, and where the source is. Keep it.
 struct KeelAboutView: View {
     var body: some View {
-        List {
-            Section {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Keel").font(.title2.bold())
-                    Text(Bundle.Info.activeBundleVersion).foregroundColor(.secondary)
-                    Text("Keel sideloads and refreshes your apps, and installs their updates by itself.")
+        ScrollView {
+            VStack(alignment: .leading, spacing: 18) {
+                Image(uiImage: UIImage(named: "SideStore") ?? UIImage())
+                    .resizable().frame(width: 84, height: 84)
+                    .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+                    .accessibilityHidden(true)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Keel").font(KeelTheme.display(30, .bold))
+                    Text(Bundle.Info.activeBundleVersion).font(.system(size: 14)).foregroundColor(KeelTheme.muted)
                 }
-                .padding(.vertical, 4)
-            }
+                Text("Keel sideloads your apps, keeps them renewed, and installs their updates by itself.")
+                    .font(.system(size: 16))
 
-            Section(header: Text("Built on SideStore"), footer: Text("Keel is a fork of SideStore, which began as a fork of AltStore. Almost all of Keel is their work. Please don't send Keel problems to the SideStore or AltStore teams.")) {
-                Link("SideStore", destination: KeelBrand.upstreamURL)
-                Link("AltStore by Riley Testut", destination: KeelBrand.altStoreURL)
+                VStack(alignment: .leading, spacing: 10) {
+                    KeelSectionLabel(text: "Licence")
+                    Text("Keel is free software under the GNU Affero General Public License v3.0 and comes with no warranty. It contains code from SideStore and AltStore, used under the same licence.")
+                        .font(.system(size: 14)).foregroundColor(KeelTheme.text.opacity(0.85))
+                    Link("Source code", destination: KeelBrand.repositoryURL).font(.system(size: 15, weight: .semibold))
+                    Link("Licence (AGPL-3.0)", destination: KeelBrand.licenseURL).font(.system(size: 15, weight: .semibold))
+                    Text("Space Grotesk font © The Space Grotesk Project Authors, SIL Open Font License 1.1.")
+                        .font(.system(size: 12)).foregroundColor(KeelTheme.muted)
+                }
+                .padding(16).frame(maxWidth: .infinity, alignment: .leading).keelCard(cornerRadius: 18)
             }
-
-            Section(header: Text("Licence"), footer: Text("Keel is free software under the GNU Affero General Public License v3.0, the same licence as SideStore. Its source code is available at the link above.")) {
-                Link("Keel source code", destination: KeelBrand.repositoryURL)
-                Link("Licence (AGPL-3.0)", destination: KeelBrand.licenseURL)
-            }
+            .padding(20)
         }
-        .navigationTitle("About Keel")
+        .background(KeelTheme.background.ignoresSafeArea())
+        .foregroundColor(KeelTheme.text)
+        .tint(KeelTheme.accent)
     }
 }
