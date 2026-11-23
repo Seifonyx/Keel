@@ -617,6 +617,9 @@ private extension SettingsViewController
     {
         switch section
         {
+        // KEEL: SideStore's "follow us / Patreon" section is theirs, not Keel's.
+        case .patreon: return true
+
         // case .macDirtyCow:
         //     let isHidden = !(UserDefaults.standard.isCowExploitSupported && UserDefaults.standard.isDebugModeEnabled)
         //     return isHidden

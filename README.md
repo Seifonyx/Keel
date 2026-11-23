@@ -22,7 +22,9 @@ team. Nearly all of the code here is theirs. Keel is licensed, like SideStore, u
   - Recent: what was updated, what failed and why, newest first.
 - **An "Update Apps" action for Shortcuts**, for a reliable nightly update (see below).
 - **`keel://update`** opens Keel and runs the update check straight away.
-- **Its own name, icon, bundle id (`app.seifonyx.keel`) and URL scheme (`keel://`)**, so it can sit next to SideStore.
+- **Its own identity:** name, icon (with Ink, Terracotta, Sea and Paper alternates), terracotta colours, wording,
+  bundle id (`app.seifonyx.keel`) and URL scheme (`keel://`), so it can sit next to SideStore. SideStore keeps its
+  credit in Settings and on the About Keel screen.
 
 ## Install
 
@@ -85,6 +87,12 @@ git grep -n "KEEL:"   # check each marked change survived
 ```
 
 Upstream's own workflows are kept but only run in SideStore's repository.
+
+**Wording.** The text you see in Keel is applied at build time, not committed: [`Keel/rebrand/strings.json`](Keel/rebrand/strings.json)
+lists each SideStore string and Keel's version, and CI runs `python3 Keel/rebrand/rebrand.py apply` before building.
+So SideStore's files stay as they wrote them and merge cleanly. If they reword one of those strings, the build
+stops and names it; update the table (`rebrand.py check` shows what no longer matches). For a local Xcode build,
+run `apply` first and `revert` before committing.
 
 ---
 

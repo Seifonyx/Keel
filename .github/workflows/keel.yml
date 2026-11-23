@@ -73,6 +73,9 @@ jobs:
           # Only for this build; not committed.
           sed -i '' "s/^CURRENT_PROJECT_VERSION = .*/CURRENT_PROJECT_VERSION = ${{ github.run_number }}/" Build.xcconfig
 
+      - name: Keel wording (replaces SideStore's visible text; see Keel/rebrand)
+        run: python3 Keel/rebrand/rebrand.py apply
+
       - name: Build (unsigned) and package
         run: |
           set -o pipefail

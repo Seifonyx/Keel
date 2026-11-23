@@ -142,7 +142,8 @@ public enum AppConstants {
         public static let errorCodesDocumentation   = URL(string: "https://docs.sidestore.io/docs/troubleshooting/error-codes")!
         public static let sideStoreWebsite          = URL(string: "https://sidestore.io")!
         public static let sideStoreGitHub           = URL(string: "https://github.com/SideStore")!
-        public static let sideStoreIssues           = URL(string: "https://github.com/SideStore/SideStore/issues")!
+        // KEEL: Settings → Send Feedback → GitHub goes to Keel's issues (upstream: SideStore/SideStore/issues).
+        public static let sideStoreIssues           = URL(string: "https://github.com/Seifonyx/Keel/issues")!
         public static let sideStoreDiscord          = URL(string: "https://discord.gg/sidestore-949183273383395328")!
     }
 
