@@ -57,7 +57,9 @@ final class PerformBackupRestoreOperation: BasePipelineOperation<InstallAppOpera
         self.appName = name
         
         let appGroupBundleID = Bundle.Info.activeBundleIdentifier
-        guard let altstoreOpenURL = URL(string: "sidestore://")
+        // KEEL: return through Keel's own per-bundle scheme ("sidestore-<bundle id>://"), since
+        // plain "sidestore://" would open SideStore if it is installed too.
+        guard let altstoreOpenURL = URL(string: "sidestore-\(appGroupBundleID)://")
         else {
             throw OperationError.openAppFailed(name: name)
         }

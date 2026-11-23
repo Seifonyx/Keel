@@ -38,8 +38,10 @@ public enum AppConstants {
     public enum Sources {
         public static let fetchTimeout: TimeInterval  = 3.0
         public static let defaultSourcesURL           = URL(string: "https://sidestore.io/default-sources")!
-        public static let sideStoreCommunitySourceURL = URL(string: "https://sidestore.io/apps-v2.json/")!
-        public static let sideStoreFallbackIconURL    = URL(string: "https://sidestore.io/apps-v2.json/apps/sidestore/icon.png")!
+        // KEEL: the built-in source is Keel's own, so Keel can update itself.
+        // Upstream: https://sidestore.io/apps-v2.json/ (add it in Sources if you want SideStore's apps).
+        public static let sideStoreCommunitySourceURL = KeelBrand.sourceURL
+        public static let sideStoreFallbackIconURL    = KeelBrand.iconURL
         public static let sideStoreWebsite            = URL(string: "https://sidestore.io")!
     }
     

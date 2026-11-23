@@ -168,6 +168,7 @@ BUILD_CONFIG ?= Release
 MARKETING_VERSION ?= 
 BUNDLE_ID_SUFFIX ?= 
 # Common build settings for xcodebuild
+# KEEL: ORG_IDENTIFIER is Keel's (upstream: com.SideStore)
 COMMON_BUILD_SETTINGS = \
 	-project AltStore.xcodeproj \
 	-scheme SideStore \
@@ -177,7 +178,7 @@ COMMON_BUILD_SETTINGS = \
 	AD_HOC_CODE_SIGNING_ALLOWED=YES \
 	CODE_SIGNING_ALLOWED=NO \
 	DEVELOPMENT_TEAM=XYZ0123456 \
-	ORG_IDENTIFIER=com.SideStore
+	ORG_IDENTIFIER=app.seifonyx
 
 # Append MARKETING_VERSION if it’s not empty (coz otherwise the blank entry becomes override)
 ifneq ($(strip $(MARKETING_VERSION)),)

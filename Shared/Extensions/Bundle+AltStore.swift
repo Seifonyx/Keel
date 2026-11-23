@@ -15,8 +15,9 @@ private nonisolated(unsafe) var appGroupsCache: [URL: (modDate: Date?, groups: [
 // @livecontainer
 private extension Bundle {
     @objc dynamic static let activeBundle: Bundle = Bundle.main
-    @objc dynamic static let storeAppBundleIdentifier = "com.SideStore.SideStore"
-    @objc dynamic static let appbundleIdentifier = "com.SideStore.SideStore"
+    // KEEL: Keel's bundle id (upstream: "com.SideStore.SideStore"). Must match Build.xcconfig.
+    @objc dynamic static let storeAppBundleIdentifier = "app.seifonyx.keel"
+    @objc dynamic static let appbundleIdentifier = "app.seifonyx.keel"
 }
 
 public extension Bundle
