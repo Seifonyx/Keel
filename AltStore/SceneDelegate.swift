@@ -57,6 +57,8 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate
                 await WidgetDataManager.publishCurrentInstalledAppsIfNeeded(in: DatabaseManager.shared.viewContext)
             }
         }
+
+        KeelLifecycleHooks.appBecameActive() // KEEL: check for app updates when Keel opens
     }
 
     func sceneDidEnterBackground(_ scene: UIScene)

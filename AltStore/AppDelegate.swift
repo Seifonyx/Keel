@@ -441,7 +441,8 @@ extension AppDelegate
                     self.performBackgroundFetch { (backgroundFetchResult) in
                         backgroundFetchCompletionHandler(backgroundFetchResult)
                     } refreshAppsCompletionHandler: { (refreshAppsResult) in
-                        taskCompletionHandler()
+                        // KEEL: refresh is done; now install any app updates, then end the background task.
+                        KeelLifecycleHooks.runAfterBackgroundRefresh(then: taskCompletionHandler)
                     }
                 }
                 catch

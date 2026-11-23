@@ -30,6 +30,11 @@ class URLHandler {
         debugLog("[URLHandler] Matched host: \(host), path: \(url.path.lowercased())")
         
         switch host {
+        // KEEL: keel://update runs the auto-updater (from Setpoint's "Update available" card, Shortcuts, Safari).
+        case "update":
+            Task { await KeelAutoUpdater.shared.run(trigger: .link) }
+            return true
+
         case "appbackupresponse":
             let result: Result<Void, Error>
             switch url.path.lowercased() {
