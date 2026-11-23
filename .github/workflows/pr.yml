@@ -18,9 +18,9 @@ concurrency:
 
 jobs:
   build:
-    if: github.repository_owner == 'SideStore' # KEEL: upstream's release jobs; they need SideStore's own runners
     name: Build and upload SideStore
-    if: ${{ github.event.pull_request.draft == false }}
+    # KEEL: added the owner check; upstream's jobs need SideStore's own runners
+    if: ${{ github.repository_owner == 'SideStore' && github.event.pull_request.draft == false }}
     runs-on: xcode-27
 
     steps:
