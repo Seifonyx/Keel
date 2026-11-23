@@ -92,7 +92,7 @@ struct KeelAutoUpdateView: View {
             }
 
             Section(footer: Text(model.lastMessage ?? "")) {
-                Button {
+                SwiftUI.Button {
                     model.updateNow()
                 } label: {
                     HStack {
@@ -121,14 +121,14 @@ struct KeelAutoUpdateView: View {
             Section {
                 NavigationLink("About Keel") { KeelAboutView() }
                 if !model.entries.isEmpty {
-                    Button("Clear log", role: .destructive) { model.clearLog() }
+                    SwiftUI.Button("Clear log", role: .destructive) { model.clearLog() }
                 }
             }
         }
         .navigationTitle("Auto-update")
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
-                Button("Done") { presentationMode.wrappedValue.dismiss() }
+                SwiftUI.Button("Done") { presentationMode.wrappedValue.dismiss() }
             }
         }
     }
