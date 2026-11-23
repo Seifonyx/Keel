@@ -25,12 +25,13 @@ env:
 jobs:
   tests:
     name: Auto-update unit tests
-    runs-on: macos-26
+    # Linux: the update rules are plain Foundation code, and Linux machines rarely queue.
+    runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - name: swift test (Keel/Tests)
-        run: cd Keel/Tests && swift test
+        run: swift --version && cd Keel/Tests && swift test
 
   build:
     name: Build Keel.ipa
