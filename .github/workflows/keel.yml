@@ -51,6 +51,15 @@ jobs:
           sudo xcode-select -s "$XCODE"
           xcodebuild -version
 
+      - name: Reuse the last build's compiled files
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/Library/Developer/Xcode/DerivedData
+            ~/Library/Caches/org.swift.swiftpm
+          key: keel-dd-${{ runner.os }}-${{ hashFiles('AltStore.xcodeproj/project.pbxproj', '.gitmodules') }}-${{ github.sha }}
+          restore-keys: keel-dd-${{ runner.os }}-${{ hashFiles('AltStore.xcodeproj/project.pbxproj', '.gitmodules') }}-
+
       - name: Tools
         run: brew install ldid
 
