@@ -70,7 +70,7 @@ unsigned `Keel.ipa` on a GitHub Mac, and on every push to `develop` publishes it
 [`keel-latest`](https://github.com/Seifonyx/Keel/releases/tag/keel-latest) release. Versions are `0.<minor>.<run number>`
 and the build number is the run number, so every build is newer than the last.
 
-Unit tests for the update rules: `cd Keel/Tests && swift test`.
+Unit tests for the update rules: `cd Keel/Tests && swift test`. On-phone checklist: [Keel/TESTING.md](Keel/TESTING.md).
 
 ## Keeping up with SideStore
 
