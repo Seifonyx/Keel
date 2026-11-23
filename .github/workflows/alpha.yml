@@ -18,6 +18,7 @@ concurrency:
 
 jobs:
   build:
+    if: github.repository_owner == 'SideStore' # KEEL: upstream's release jobs; they need SideStore's own runners
     runs-on: xcode-27
     env:
       DEPLOY_KEY: ${{ secrets.CROSS_REPO_PUSH_KEY }}

@@ -1,0 +1,121 @@
+# KEEL: builds Keel on GitHub's Macs as an unsigned .ipa (SideStore/Keel signs it on the phone)
+# and publishes it, with Keel's own source (keel-source.json), to the rolling "keel-latest" release.
+# Pull requests and other branches only build and test; pushes to develop release.
+name: Keel
+
+on:
+  push:
+    branches: [develop]
+    paths-ignore: ['**.md', 'LICENSE']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: keel-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  RELEASE_TAG: keel-latest
+  DOWNLOAD_BASE: https://github.com/${{ github.repository }}/releases/download/keel-latest
+  ICON_URL: https://raw.githubusercontent.com/${{ github.repository }}/develop/Keel/Branding/icon-1024.png
+
+jobs:
+  tests:
+    name: Auto-update unit tests
+    runs-on: macos-26
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: swift test (Keel/Tests)
+        run: cd Keel/Tests && swift test
+
+  build:
+    name: Build Keel.ipa
+    needs: tests
+    runs-on: macos-26
+    timeout-minutes: 60
+    env:
+      GH_TOKEN: ${{ github.token }}
+      RELEASE: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/develop' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Newest Xcode on the runner
+        run: |
+          XCODE=$(ls -d /Applications/Xcode_*.app | sort -V | grep -v -i beta | tail -1)
+          sudo xcode-select -s "$XCODE"
+          xcodebuild -version
+
+      - name: Tools
+        run: brew install ldid
+
+      - name: Version (0.<minor>.<run number>, build = run number)
+        run: |
+          UPSTREAM=$(sed -n 's/^MARKETING_VERSION = //p' Build.xcconfig)
+          MAJOR=$(echo "$UPSTREAM" | cut -d. -f1); MINOR=$(echo "$UPSTREAM" | cut -d. -f2)
+          echo "UPSTREAM_VERSION=$UPSTREAM" >> "$GITHUB_ENV"
+          echo "KEEL_VERSION=$MAJOR.$MINOR.${{ github.run_number }}" >> "$GITHUB_ENV"
+          echo "KEEL_BUILD=${{ github.run_number }}" >> "$GITHUB_ENV"
+          # Only for this build; not committed.
+          sed -i '' "s/^CURRENT_PROJECT_VERSION = .*/CURRENT_PROJECT_VERSION = ${{ github.run_number }}/" Build.xcconfig
+
+      - name: Build (unsigned) and package
+        run: |
+          set -o pipefail
+          mkdir -p build/logs
+          NSUnbufferedIO=YES make -B build MARKETING_VERSION="$KEEL_VERSION" 2>&1 | tee build/logs/build.log | xcbeautify || \
+            (grep -E "error:" build/logs/build.log | head -50; exit 1)
+          make fakesign 2>&1 | tee -a build/logs/build.log
+          make ipa 2>&1 | tee -a build/logs/build.log
+          mv SideStore.ipa Keel.ipa
+          unzip -p Keel.ipa 'Payload/SideStore.app/Info.plist' > info.plist
+          plutil -p info.plist | grep -E "CFBundleIdentifier|CFBundleDisplayName|CFBundleShortVersionString|CFBundleVersion"
+
+      - name: Check the build is Keel's
+        run: |
+          test "$(plutil -extract CFBundleIdentifier raw info.plist)" = "app.seifonyx.keel"
+          test "$(plutil -extract CFBundleDisplayName raw info.plist)" = "Keel"
+          test "$(plutil -extract CFBundleShortVersionString raw info.plist)" = "$KEEL_VERSION"
+          test "$(plutil -extract CFBundleVersion raw info.plist)" = "$KEEL_BUILD"
+          plutil -p info.plist | grep -q '"keel"'
+
+      - name: Source JSON
+        run: |
+          python3 Keel/scripts/make_source.py \
+            --ipa Keel.ipa --out keel-source.json \
+            --download-url "$DOWNLOAD_BASE/Keel.ipa" \
+            --source-url "$DOWNLOAD_BASE/keel-source.json" \
+            --icon-url "$ICON_URL" \
+            --entitlements AltStore/Resources/ReleaseEntitlements.plist AltWidget/Resources/ReleaseEntitlements.plist \
+            --notes "Keel build $KEEL_BUILD, based on SideStore $UPSTREAM_VERSION ($(git rev-parse --short HEAD))."
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: keel-${{ github.run_number }}
+          path: |
+            Keel.ipa
+            keel-source.json
+            build/logs/build.log
+          retention-days: 7
+
+      - name: Publish to the keel-latest release
+        if: env.RELEASE == 'true'
+        run: |
+          if ! gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            gh release create "$RELEASE_TAG" --target "$GITHUB_SHA" --prerelease \
+              --title "Keel (latest build)" \
+              --notes "Add this source to SideStore or Keel: $DOWNLOAD_BASE/keel-source.json"
+          fi
+          # The .ipa first, then the source that points at it, so the source never
+          # describes a file that isn't there yet (SideStore checks size and hash).
+          gh release upload "$RELEASE_TAG" Keel.ipa --clobber
+          gh release upload "$RELEASE_TAG" keel-source.json --clobber
+          gh release edit "$RELEASE_TAG" --notes "Keel $KEEL_VERSION (build $KEEL_BUILD), based on SideStore $UPSTREAM_VERSION.
+
+          Source: $DOWNLOAD_BASE/keel-source.json"

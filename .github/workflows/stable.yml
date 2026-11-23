@@ -12,6 +12,7 @@ concurrency:
 
 jobs:
   build:
+    if: github.repository_owner == 'SideStore' # KEEL: upstream's release jobs; they need SideStore's own runners
     name: Build SideStore - stable
     runs-on: xcode-27
 
