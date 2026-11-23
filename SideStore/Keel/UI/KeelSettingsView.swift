@@ -108,7 +108,7 @@ struct KeelSettingsView: View {
     private var divider: some View { Rectangle().fill(KeelTheme.line).frame(height: 1).padding(.leading, 16) }
 
     private func tile(_ label: String, ok: Bool, value: String) -> some View {
-        Button { navigator.showAdvancedSettings() } label: {
+        SwiftUI.Button { navigator.showAdvancedSettings() } label: {
             VStack(alignment: .leading, spacing: 8) {
                 Circle().fill(ok ? KeelTheme.good : KeelTheme.warning).frame(width: 8, height: 8)
                 Text(label).font(.system(size: 12)).foregroundColor(KeelTheme.muted)
@@ -133,7 +133,7 @@ struct KeelSettingsView: View {
     }
 
     private func linkRow(_ title: String, detail: String? = nil, value: String?, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
+        SwiftUI.Button(action: action) {
             HStack(spacing: 12) {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(title).font(.system(size: 16)).foregroundColor(KeelTheme.text).lineLimit(1)

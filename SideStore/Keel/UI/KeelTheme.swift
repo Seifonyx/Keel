@@ -101,7 +101,7 @@ struct KeelPrimaryButton: View {
     let action: () -> Void
 
     var body: some View {
-        Button(action: action) {
+        SwiftUI.Button(action: action) {
             HStack(spacing: 8) {
                 if isBusy { ProgressView().tint(.white) }
                 Text(title).font(.system(size: 15, weight: .semibold))

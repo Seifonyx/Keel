@@ -65,7 +65,7 @@ struct KeelActivityView: View {
                     Spacer()
                     if !model.days.isEmpty {
                         Menu {
-                            Button(role: .destructive) { model.clear() } label: { Label("Clear activity", systemImage: "trash") }
+                            SwiftUI.Button(role: .destructive) { model.clear() } label: { Label("Clear activity", systemImage: "trash") }
                         } label: {
                             Image(systemName: "ellipsis").font(.system(size: 17, weight: .semibold))
                                 .frame(width: 44, height: 44).keelGlass(in: Circle(), interactive: true)
@@ -87,7 +87,7 @@ struct KeelActivityView: View {
                         KeelSectionLabel(text: day.title)
                         VStack(spacing: 0) {
                             ForEach(day.entries) { entry in
-                                Button { if entry.outcome == .failed { selected = entry } } label: {
+                                SwiftUI.Button { if entry.outcome == .failed { selected = entry } } label: {
                                     HStack(alignment: .top, spacing: 12) {
                                         Image(systemName: Self.symbol(entry.outcome))
                                             .foregroundColor(Self.color(entry.outcome))
@@ -173,7 +173,7 @@ struct KeelProblemSheet: View {
                 if let fix = explanation.fix, fixNote == nil {
                     KeelPrimaryButton(title: Self.fixTitle(fix), isBusy: fixing) { perform(fix) }
                 }
-                Button { withAnimation { showDetails.toggle() } } label: {
+                SwiftUI.Button { withAnimation { showDetails.toggle() } } label: {
                     HStack { Text("Technical details"); Image(systemName: showDetails ? "chevron.up" : "chevron.down") }
                         .font(.system(size: 13)).foregroundColor(KeelTheme.muted).frame(minHeight: 44)
                 }

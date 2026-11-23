@@ -111,13 +111,13 @@ final class KeelAppsModel: ObservableObject {
 struct KeelAppsView: View {
     @EnvironmentObject private var navigator: KeelNavigator
     @StateObject private var model = KeelAppsModel()
-    @FetchRequest private var apps: FetchedResults<InstalledApp>
+    @SwiftUI.FetchRequest private var apps: FetchedResults<InstalledApp>
     @ObservedObject private var settingsWatcher = KeelSettingsWatcher.shared
 
     init() {
         let request = InstalledApp.activeAppsFetchRequest()
         request.sortDescriptors = [NSSortDescriptor(keyPath: \InstalledApp.name, ascending: true)]
-        _apps = FetchRequest(fetchRequest: request, animation: .default)
+        _apps = SwiftUI.FetchRequest(fetchRequest: request, animation: .default)
     }
 
     var body: some View {
@@ -159,11 +159,11 @@ struct KeelAppsView: View {
                 Spacer()
                 connectionChip
                 Menu {
-                    Button { Task { await KeelAutoUpdater.shared.run(trigger: .manual) } } label: { Label("Install updates now", systemImage: "arrow.down.circle") }
-                    Button { model.refresh(Array(apps), presenter: navigator.topViewController) } label: { Label("Renew all apps now", systemImage: "arrow.triangle.2.circlepath") }
+                    SwiftUI.Button { Task { await KeelAutoUpdater.shared.run(trigger: .manual) } } label: { Label("Install updates now", systemImage: "arrow.down.circle") }
+                    SwiftUI.Button { model.refresh(Array(apps), presenter: navigator.topViewController) } label: { Label("Renew all apps now", systemImage: "arrow.triangle.2.circlepath") }
                     Divider()
-                    Button { navigator.showClassicMyApps() } label: { Label("Install from a file…", systemImage: "doc.badge.plus") }
-                    Button { navigator.showClassicMyApps() } label: { Label("All app tools", systemImage: "wrench.and.screwdriver") }
+                    SwiftUI.Button { navigator.showClassicMyApps() } label: { Label("Install from a file…", systemImage: "doc.badge.plus") }
+                    SwiftUI.Button { navigator.showClassicMyApps() } label: { Label("All app tools", systemImage: "wrench.and.screwdriver") }
                 } label: {
                     Image(systemName: "ellipsis")
                         .font(.system(size: 17, weight: .semibold))
@@ -208,7 +208,7 @@ struct KeelAppsView: View {
                 HStack {
                     KeelSectionLabel(text: "Recent")
                     Spacer()
-                    Button("See all") { navigator.showTab(.activity) }
+                    SwiftUI.Button("See all") { navigator.showTab(.activity) }
                         .font(.system(size: 13, weight: .semibold)).foregroundColor(KeelTheme.accent)
                         .frame(minHeight: 44)
                 }
@@ -263,13 +263,13 @@ struct KeelAppCard: View {
         .contentShape(RoundedRectangle(cornerRadius: 22))
         .contextMenu {
             if !app.keelIsKeel {
-                Button { UIApplication.shared.open(app.openAppURL) } label: { Label("Open", systemImage: "arrow.up.forward.app") }
+                SwiftUI.Button { UIApplication.shared.open(app.openAppURL) } label: { Label("Open", systemImage: "arrow.up.forward.app") }
             }
-            Button { model.refresh([app], presenter: navigator.topViewController) } label: { Label("Renew now", systemImage: "arrow.triangle.2.circlepath") }
+            SwiftUI.Button { model.refresh([app], presenter: navigator.topViewController) } label: { Label("Renew now", systemImage: "arrow.triangle.2.circlepath") }
             if update != nil {
-                Button { model.update(app, presenter: navigator.topViewController) } label: { Label("Update", systemImage: "arrow.down.circle") }
+                SwiftUI.Button { model.update(app, presenter: navigator.topViewController) } label: { Label("Update", systemImage: "arrow.down.circle") }
             }
-            Button { navigator.showClassicMyApps() } label: { Label("More options…", systemImage: "ellipsis.circle") }
+            SwiftUI.Button { navigator.showClassicMyApps() } label: { Label("More options…", systemImage: "ellipsis.circle") }
         }
         .task(id: app.objectID) { icon = try? await app.loadIcon() }
     }
