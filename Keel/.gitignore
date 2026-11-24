@@ -1,0 +1,2 @@
+# KEEL: the root .gitignore ignores *.md; Keel's own docs are tracked.
+!*.md
